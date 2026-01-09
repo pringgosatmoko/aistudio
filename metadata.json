@@ -1,6 +1,10 @@
 {
   "name": "SATMOKO Creative Studio AI",
+<<<<<<< HEAD
   "description": "Premium Image-to-Video and Text-to-Image generation studio powered by Gemini and VEO engine.",
+=======
+  "description": "All-in-one AI creative platform for professional visual content generation including Text-to-Image and Image-to-Video capabilities.",
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
   "requestFramePermissions": [
     "camera",
     "microphone"

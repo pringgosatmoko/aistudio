@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { AppRoute, User, UserStatus } from '../types';
 import { Icons } from '../constants';
@@ -104,6 +105,88 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onNavigate }) => {
           </div>
         </div>
       </div>
+=======
+import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import { UserStatus } from '../types';
+
+const Dashboard: React.FC = () => {
+  const { profile } = useAuth();
+
+  const cards = [
+    {
+      title: 'Text to Image',
+      desc: 'Buat gambar estetik dari deskripsi teks sederhana.',
+      icon: '🎨',
+      link: '/text-to-image',
+      color: 'from-pink-500 to-rose-500'
+    },
+    {
+      title: 'Image to Video',
+      desc: 'Ubah foto diam menjadi video sinematik pendek.',
+      icon: '🎬',
+      link: '/image-to-video',
+      color: 'from-blue-500 to-indigo-500'
+    },
+    {
+      title: 'Profile Settings',
+      desc: 'Atur profil dan cek masa aktif langganan.',
+      icon: '👤',
+      link: '/profile',
+      color: 'from-emerald-500 to-teal-500'
+    }
+  ];
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Halo, {profile?.name?.split(' ')[0]} 👋</h1>
+          <p className="text-gray-400 mt-1">Selamat datang kembali di SATMOKO Creative Studio AI.</p>
+        </div>
+        <div className="glass-card px-4 py-2 rounded-2xl flex items-center space-x-3">
+          <div className={`w-3 h-3 rounded-full ${profile?.status === UserStatus.ACTIVE ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
+          <span className="text-sm font-medium uppercase tracking-wider">{profile?.status} User</span>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {cards.map((card) => (
+          <Link
+            key={card.title}
+            to={card.link}
+            className="group glass-card p-6 rounded-3xl hover:border-white/20 transition-all overflow-hidden relative"
+          >
+            <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${card.color} opacity-10 blur-2xl group-hover:opacity-20 transition-all`}></div>
+            <div className="text-4xl mb-4">{card.icon}</div>
+            <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{card.title}</h3>
+            <p className="text-gray-400 text-sm leading-relaxed">{card.desc}</p>
+          </Link>
+        ))}
+      </div>
+
+      <section className="glass-card p-8 rounded-3xl">
+        <h2 className="text-xl font-bold mb-6 flex items-center space-x-2">
+          <span>✨</span>
+          <span>Inspirasi Harian</span>
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white/5 relative group cursor-pointer">
+              <img 
+                src={`https://picsum.photos/seed/ai${i}/400/400`} 
+                alt="AI Generated Sample" 
+                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all scale-110 group-hover:scale-100"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all flex items-end p-4">
+                <span className="text-[10px] font-medium text-white truncate">"Futuristic city in neon lights..."</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     </div>
   );
 };

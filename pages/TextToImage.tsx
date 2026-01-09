@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 import React, { useState, useRef } from 'react';
 import { ImageParams, User } from '../types';
 import { IMAGE_STYLES, COLOR_GRADING, Icons } from '../constants';
@@ -64,11 +65,45 @@ const TextToImage: React.FC<TextToImageProps> = ({ user }) => {
       await dbService.saveRecord(record);
     } catch (err: any) {
       setError(err.message || 'Kesalahan mesin sintesis.');
+=======
+import React, { useState } from 'react';
+import { GeminiService } from '../services/geminiService';
+import { useAuth } from '../contexts/AuthContext';
+import { UserStatus } from '../types';
+
+const TextToImage: React.FC = () => {
+  const { profile } = useAuth();
+  const [prompt, setPrompt] = useState('');
+  const [style, setStyle] = useState('Realistic');
+  const [aspectRatio, setAspectRatio] = useState<"1:1" | "3:4" | "4:3" | "9:16" | "16:9">("1:1");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState('');
+
+  const isExpired = profile?.status === UserStatus.EXPIRED || profile?.status === UserStatus.SUSPENDED;
+
+  const handleGenerate = async () => {
+    if (isExpired) {
+      setError('Masa aktif paket Anda telah habis. Silakan perpanjang untuk lanjut menggunakan fitur ini.');
+      return;
+    }
+    
+    if (!prompt) return;
+    setLoading(true);
+    setError('');
+    
+    try {
+      const imageUrl = await GeminiService.generateImage(`${prompt}, style: ${style}`, aspectRatio);
+      setResult(imageUrl);
+    } catch (err: any) {
+      setError('Gagal menghasilkan gambar. Coba lagi nanti.');
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     } finally {
       setLoading(false);
     }
   };
 
+<<<<<<< HEAD
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn pb-20">
       <div className="lg:col-span-4 space-y-6">
@@ -203,6 +238,106 @@ const TextToImage: React.FC<TextToImageProps> = ({ user }) => {
           {/* Decorative Background Elements */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+=======
+  const styles = ['Realistic', 'Anime', 'Cyberpunk', 'Oil Painting', '3D Render', 'Sketch'];
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      <header>
+        <h1 className="text-3xl font-bold">Text to Image</h1>
+        <p className="text-gray-400">Deskripsikan imajinasi Anda menjadi kenyataan.</p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <div className="glass-card p-6 rounded-3xl space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Prompt</label>
+              <textarea
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none min-h-[120px] resize-none"
+                placeholder="Misal: Seekor kucing astronot sedang minum kopi di Mars..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Pilih Style</label>
+              <div className="grid grid-cols-3 gap-2">
+                {styles.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setStyle(s)}
+                    className={`py-2 text-[10px] rounded-lg border transition-all ${
+                      style === s
+                        ? 'bg-blue-600 border-blue-600 text-white'
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Aspect Ratio</label>
+              <div className="flex flex-wrap gap-2">
+                {(["1:1", "4:3", "3:4", "16:9", "9:16"] as const).map((ratio) => (
+                  <button
+                    key={ratio}
+                    onClick={() => setAspectRatio(ratio)}
+                    className={`px-3 py-2 text-[10px] rounded-lg border transition-all ${
+                      aspectRatio === ratio
+                        ? 'bg-purple-600 border-purple-600 text-white'
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    {ratio}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={handleGenerate}
+              disabled={loading || !prompt || isExpired}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Sedang Membuat...</span>
+                </span>
+              ) : 'Hasilkan Gambar'}
+            </button>
+          </div>
+          
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="glass-card rounded-3xl overflow-hidden flex flex-col min-h-[400px]">
+          <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
+            <span className="text-xs font-bold uppercase text-gray-500">Preview</span>
+            {result && (
+              <a href={result} download="satmoko-ai-image.png" className="text-blue-400 text-xs hover:underline">Download</a>
+            )}
+          </div>
+          <div className="flex-1 flex items-center justify-center p-6 bg-[#050505]">
+            {result ? (
+              <img src={result} alt="Generated result" className="max-w-full max-h-[500px] rounded-xl shadow-2xl animate-in zoom-in-95 duration-700" />
+            ) : (
+              <div className="text-center space-y-4 opacity-30">
+                <div className="text-6xl">🎨</div>
+                <p className="text-sm">Gambar akan muncul di sini</p>
+              </div>
+            )}
+          </div>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { AppRoute, User, UserStatus } from '../types';
 import { Icons } from '../constants';
@@ -82,11 +83,83 @@ const Layout: React.FC<LayoutProps> = ({ children, activeRoute, onNavigate, user
           >
             <Icons.Logout />
             Keluar Akun
+=======
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { UserRole, UserStatus } from '../types';
+import Countdown from './Countdown';
+
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { profile, signOut } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
+  const menuItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
+    { path: '/text-to-image', label: 'Text to Image', icon: '🎨' },
+    { path: '/image-to-video', label: 'Image to Video', icon: '🎬' },
+    { path: '/profile', label: 'Profile', icon: '👤' },
+  ];
+
+  if (profile?.role === UserRole.ADMIN) {
+    menuItems.push({ path: '/admin', label: 'Admin Panel', icon: '🛠️' });
+  }
+
+  const isActive = (path: string) => location.pathname === path;
+
+  return (
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#0a0a0a]">
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 glass-card border-r border-white/5 flex flex-col sticky top-0 h-auto md:h-screen z-50">
+        <div className="p-6">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            SATMOKO AI
+          </h1>
+          <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Creative Studio</p>
+        </div>
+
+        <nav className="flex-1 px-4 space-y-1">
+          {menuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
+                isActive(item.path)
+                  ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <span>{item.icon}</span>
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <div className="p-4 mt-auto border-t border-white/5">
+          {profile && (
+            <div className="mb-4">
+              <Countdown expiryDate={profile.expired_at} />
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl transition-all"
+          >
+            <span>🚪</span>
+            <span>Logout</span>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
+<<<<<<< HEAD
       <main className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden flex items-center justify-between p-5 bg-slate-900 border-b border-slate-800 sticky top-0 z-20 backdrop-blur-lg bg-opacity-90">
           <div className="flex items-center gap-3">
@@ -136,6 +209,12 @@ const Layout: React.FC<LayoutProps> = ({ children, activeRoute, onNavigate, user
             </button>
           ))}
         </nav>
+=======
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="max-w-6xl mx-auto">
+          {children}
+        </div>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
       </main>
     </div>
   );

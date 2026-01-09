@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { VideoParams, User, CharacterParams } from '../types';
 import { VIDEO_STYLES, CAMERA_ANGLES, Icons } from '../constants';
@@ -47,10 +48,38 @@ const ImageToVideo: React.FC<ImageToVideoProps> = ({ user }) => {
     if (window.aistudio) {
       await window.aistudio.openSelectKey();
       setHasKey(true); // Asumsi sukses setelah dialog dibuka
+=======
+import React, { useState } from 'react';
+import { GeminiService } from '../services/geminiService';
+import { useAuth } from '../contexts/AuthContext';
+import { UserStatus } from '../types';
+
+const ImageToVideo: React.FC = () => {
+  const { profile } = useAuth();
+  const [prompt, setPrompt] = useState('');
+  const [image, setImage] = useState<string | null>(null);
+  const [duration, setDuration] = useState<3 | 6 | 8>(3);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [statusMsg, setStatusMsg] = useState('');
+
+  const isExpired = profile?.status === UserStatus.EXPIRED || profile?.status === UserStatus.SUSPENDED;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     }
   };
 
   const handleGenerate = async () => {
+<<<<<<< HEAD
     if (!imageB64 || !prompt) {
       setError('Bingkai sumber atau perintah teks belum lengkap.');
       return;
@@ -58,10 +87,15 @@ const ImageToVideo: React.FC<ImageToVideoProps> = ({ user }) => {
 
     if (user.status !== 'approved') {
       setError('Akses dibatasi. Langganan Anda perlu diaktifkan oleh admin.');
+=======
+    if (isExpired) {
+      setError('Masa aktif paket Anda telah habis.');
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
       return;
     }
 
     setLoading(true);
+<<<<<<< HEAD
     setError(null);
     setResultUrl(null);
 
@@ -86,10 +120,41 @@ const ImageToVideo: React.FC<ImageToVideoProps> = ({ user }) => {
       }
     } finally {
       setLoading(false);
+=======
+    setError('');
+    setStatusMsg('Memulai proses Veo...');
+
+    try {
+      // Simulate status updates for user experience as Veo can take minutes
+      const statuses = [
+        'Menganalisis gambar...',
+        'Memproses gerakan video...',
+        'Hampir selesai...',
+        'Sedang merender hasil final...'
+      ];
+      
+      let statusIdx = 0;
+      const statusInterval = setInterval(() => {
+        if (statusIdx < statuses.length) {
+          setStatusMsg(statuses[statusIdx]);
+          statusIdx++;
+        }
+      }, 15000);
+
+      const videoUrl = await GeminiService.generateVideo(prompt, image || undefined, duration);
+      clearInterval(statusInterval);
+      setResult(videoUrl);
+    } catch (err: any) {
+      setError('Gagal menghasilkan video. Veo memerlukan waktu beberapa menit atau sedang sibuk.');
+    } finally {
+      setLoading(false);
+      setStatusMsg('');
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     }
   };
 
   return (
+<<<<<<< HEAD
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn pb-24">
       {/* Tombol Aktivasi Mesin Wajib untuk Veo */}
       {!hasKey && (
@@ -219,6 +284,110 @@ const ImageToVideo: React.FC<ImageToVideoProps> = ({ user }) => {
             </div>
           )}
         </div>
+=======
+    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      <header>
+        <h1 className="text-3xl font-bold">Image to Video</h1>
+        <p className="text-gray-400">Hidupkan foto Anda dengan AI Video tercanggih.</p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <div className="glass-card p-6 rounded-3xl space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Upload Referensi Gambar (Opsional)</label>
+              <div className="relative group">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                />
+                <div className={`w-full h-40 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-4 transition-all ${image ? 'border-blue-500/50 bg-blue-500/5' : 'group-hover:border-white/20 bg-white/5'}`}>
+                  {image ? (
+                    <img src={image} alt="Upload preview" className="h-full object-contain rounded-lg" />
+                  ) : (
+                    <>
+                      <div className="text-3xl mb-2">📸</div>
+                      <p className="text-xs text-gray-500">Klik atau seret gambar ke sini</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Prompt Gerakan</label>
+              <textarea
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none min-h-[80px] resize-none"
+                placeholder="Misal: Kamera perlahan mendekat ke wajah, rambut tertiup angin..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Durasi</label>
+              <div className="flex gap-2">
+                {[3, 6, 8].map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setDuration(d as 3 | 6 | 8)}
+                    className={`flex-1 py-2 text-xs rounded-lg border transition-all ${
+                      duration === d
+                        ? 'bg-indigo-600 border-indigo-600 text-white'
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    {d} Detik
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={handleGenerate}
+              disabled={loading || isExpired}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="flex flex-col items-center">
+                   <span className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Proses Sedang Berjalan...</span>
+                  </span>
+                  <span className="text-[10px] mt-1 font-normal opacity-70 italic">{statusMsg}</span>
+                </span>
+              ) : 'Generate Video'}
+            </button>
+          </div>
+
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="glass-card rounded-3xl overflow-hidden flex flex-col min-h-[400px]">
+          <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
+            <span className="text-xs font-bold uppercase text-gray-500">Video Result</span>
+            {result && (
+              <a href={result} download="satmoko-ai-video.mp4" className="text-blue-400 text-xs hover:underline">Download MP4</a>
+            )}
+          </div>
+          <div className="flex-1 flex items-center justify-center p-4 bg-[#050505]">
+            {result ? (
+              <video src={result} controls autoPlay loop className="max-w-full rounded-xl shadow-2xl" />
+            ) : (
+              <div className="text-center space-y-4 opacity-30">
+                <div className="text-6xl">🎬</div>
+                <p className="text-sm">Video akan muncul di sini</p>
+              </div>
+            )}
+          </div>
+        </div>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 export enum AppRoute {
   DASHBOARD = 'dashboard',
   IMAGE_TO_VIDEO = 'image-to-video',
@@ -8,10 +9,17 @@ export enum AppRoute {
   ADMIN = 'admin',
   LOGIN = 'login',
   REGISTER = 'register'
+=======
+export enum SubscriptionType {
+  MONTH1 = '1_month',
+  MONTH3 = '3_months',
+  YEAR1 = '1_year'
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
 }
 
 export enum UserStatus {
   PENDING = 'pending',
+<<<<<<< HEAD
   APPROVED = 'approved',
   REJECTED = 'rejected'
 }
@@ -59,4 +67,32 @@ export interface ImageParams {
   style: string;
   colorGrading: string;
   referenceImages?: string[]; 
+=======
+  ACTIVE = 'active',
+  SUSPENDED = 'suspended',
+  EXPIRED = 'expired'
+}
+
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin'
+}
+
+export interface Profile {
+  id: string;
+  name: string; // Changed from full_name
+  phone: string;
+  subscription_type: SubscriptionType;
+  status: UserStatus;
+  role: UserRole;
+  subscription_days: number; // Added field
+  expired_at: string | null; // Changed from subscription_end
+  telegram_chat_id: string | null;
+  created_at: string;
+}
+
+export interface AuthState {
+  profile: Profile | null;
+  loading: boolean;
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
 }

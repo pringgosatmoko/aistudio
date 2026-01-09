@@ -6,7 +6,11 @@
 
 This contains everything you need to run your app locally.
 
+<<<<<<< HEAD
 View your app in AI Studio: https://ai.studio/apps/drive/1jsDXHJB7SjToP8kmywxs4304djWwCjso
+=======
+View your app in AI Studio: https://ai.studio/apps/drive/1O-Pe4V3vJIcmIJvGGCXQgEdspq6kqIHU
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
 
 ## Run Locally
 

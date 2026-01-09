@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { AppRoute } from '../types';
 import { dbService } from '../services/supabaseService';
 import { notificationService } from '../services/notificationService';
@@ -105,6 +106,161 @@ const Register: React.FC<RegisterProps> = ({ onNavigate }) => {
         <div className="text-center">
           <button onClick={() => onNavigate(AppRoute.LOGIN)} className="text-[10px] font-black text-slate-500 hover:text-white uppercase tracking-widest">Sudah punya akun? Masuk</button>
         </div>
+=======
+import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { SubscriptionType, UserRole, UserStatus } from '../types';
+
+const Register: React.FC = () => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [subType, setSubType] = useState<SubscriptionType>(SubscriptionType.MONTH1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      // Internal email generation logic
+      const email = `${phone}@user.satmoko.ai`;
+      
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          }
+        }
+      });
+
+      if (signUpError) throw signUpError;
+      if (!authData.user) throw new Error('Registrasi gagal.');
+
+      // Map SubscriptionType to days
+      let days = 30;
+      if (subType === SubscriptionType.MONTH3) days = 90;
+      if (subType === SubscriptionType.YEAR1) days = 365;
+
+      // Insert into profiles table with correct columns
+      const { error: profileError } = await supabase.from('profiles').insert({
+        id: authData.user.id,
+        name,
+        phone,
+        subscription_type: subType,
+        subscription_days: days,
+        status: UserStatus.PENDING,
+        role: UserRole.USER,
+        expired_at: null,
+      });
+
+      if (profileError) throw profileError;
+
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Registrasi gagal. Nomor HP mungkin sudah terdaftar.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const planOptions = [
+    { id: SubscriptionType.MONTH1, label: '1 Bulan' },
+    { id: SubscriptionType.MONTH3, label: '3 Bulan' },
+    { id: SubscriptionType.YEAR1, label: '1 Tahun' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            BUAT AKUN
+          </h1>
+          <p className="text-gray-500 mt-2">Gabung dengan SATMOKO Creative Studio</p>
+        </div>
+
+        <form onSubmit={handleRegister} className="glass-card p-8 rounded-3xl space-y-4">
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Nama Lengkap</label>
+            <input
+              type="text"
+              required
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Nomor HP</label>
+            <input
+              type="text"
+              required
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+            <input
+              type="password"
+              required
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Pilih Paket Langganan</label>
+            <div className="grid grid-cols-3 gap-2">
+              {planOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setSubType(opt.id)}
+                  className={`py-2 text-xs rounded-lg border transition-all ${
+                    subType === opt.id
+                      ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20'
+                      : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 mt-4 rounded-xl transition-all disabled:opacity-50"
+          >
+            {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
+          </button>
+        </form>
+
+        <p className="text-center text-gray-500 mt-8 text-sm">
+          Sudah punya akun?{' '}
+          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
+            Login
+          </Link>
+        </p>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
       </div>
     </div>
   );

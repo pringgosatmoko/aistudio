@@ -1,5 +1,6 @@
 
 import React from 'react';
+<<<<<<< HEAD
 import { User, AppRoute } from '../types';
 import { dbService } from '../services/supabaseService';
 
@@ -53,10 +54,70 @@ const Profile: React.FC<ProfileProps> = ({ user, onNavigate }) => {
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-1">Sisa Langganan</label>
               <p className={`text-2xl font-black border-b border-slate-800 pb-3 ${remainingDays > 0 ? 'text-amber-500' : 'text-red-500'}`}>
                 {user.status === 'approved' ? `${remainingDays} Hari` : 'Belum Aktif'}
+=======
+import { useAuth } from '../contexts/AuthContext';
+import { UserStatus, SubscriptionType } from '../types';
+
+const ProfilePage: React.FC = () => {
+  const { profile } = useAuth();
+
+  const getStatusColor = (status: UserStatus) => {
+    switch(status) {
+      case UserStatus.ACTIVE: return 'text-green-400 bg-green-400/10';
+      case UserStatus.PENDING: return 'text-yellow-400 bg-yellow-400/10';
+      case UserStatus.EXPIRED: return 'text-red-400 bg-red-400/10';
+      default: return 'text-gray-400 bg-gray-400/10';
+    }
+  };
+
+  const getPlanLabel = (type?: SubscriptionType) => {
+    switch(type) {
+      case SubscriptionType.MONTH1: return '1 Bulan';
+      case SubscriptionType.MONTH3: return '3 Bulan';
+      case SubscriptionType.YEAR1: return '1 Tahun';
+      default: return 'N/A';
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <header>
+        <h1 className="text-3xl font-bold">Profil Akun</h1>
+        <p className="text-gray-400">Informasi langganan dan pengaturan Anda.</p>
+      </header>
+
+      <div className="space-y-6">
+        <div className="glass-card p-8 rounded-3xl space-y-8">
+          <div className="flex items-center space-x-6">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-3xl font-bold border-4 border-white/5 shadow-2xl">
+              {profile?.name?.[0]?.toUpperCase()}
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">{profile?.name}</h2>
+              <p className="text-gray-500">{profile?.phone}</p>
+              <div className={`inline-block mt-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(profile?.status || UserStatus.PENDING)}`}>
+                {profile?.status}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+              <p className="text-[10px] uppercase text-gray-500 font-bold mb-1">Paket Saat Ini</p>
+              <p className="text-xl font-bold text-blue-400">{getPlanLabel(profile?.subscription_type)}</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+              <p className="text-[10px] uppercase text-gray-500 font-bold mb-1">Masa Aktif Hingga</p>
+              <p className="text-lg font-bold">
+                {profile?.expired_at 
+                  ? new Date(profile.expired_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+                  : 'Belum Diaktifkan'}
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
               </p>
             </div>
           </div>
 
+<<<<<<< HEAD
           <div className="pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-center md:text-left">
               <h3 className="text-xs font-black text-white tracking-[0.2em] uppercase mb-1">Keamanan Jaringan</h3>
@@ -64,10 +125,37 @@ const Profile: React.FC<ProfileProps> = ({ user, onNavigate }) => {
             </div>
             <button className="px-10 py-4 bg-slate-800 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest border border-slate-700 hover:bg-slate-700 transition-all active:scale-95 shadow-lg">
               Ubah Password
+=======
+          <div className="bg-blue-600/10 p-6 rounded-2xl border border-blue-500/20">
+            <div className="flex items-start space-x-4">
+              <div className="text-2xl">📱</div>
+              <div>
+                <h4 className="font-bold text-blue-400">Hubungkan Telegram</h4>
+                <p className="text-sm text-gray-400 mt-1">Dapatkan notifikasi masa aktif dan hasil generate AI langsung di ponsel Anda.</p>
+                <button className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-bold transition-all">
+                  Mulai Bot Telegram
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card p-6 rounded-3xl">
+          <h3 className="text-lg font-bold mb-4">Bantuan & Dukungan</h3>
+          <div className="space-y-3">
+            <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center justify-between group">
+              <span>Hubungi Admin WhatsApp</span>
+              <span className="opacity-0 group-hover:opacity-100 transition-all text-blue-400">👉</span>
+            </button>
+            <button className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all flex items-center justify-between group">
+              <span>Pertanyaan Umum (FAQ)</span>
+              <span className="opacity-0 group-hover:opacity-100 transition-all text-blue-400">👉</span>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
             </button>
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       {/* Admin Panel Direct Link Section */}
       {user.role === 'admin' && (
@@ -86,8 +174,14 @@ const Profile: React.FC<ProfileProps> = ({ user, onNavigate }) => {
           </div>
         </div>
       )}
+=======
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default Profile;
+=======
+export default ProfilePage;
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)

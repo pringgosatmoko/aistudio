@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { AppRoute, User } from '../types';
 import { dbService } from '../services/supabaseService';
@@ -40,10 +41,42 @@ const Login: React.FC<LoginProps> = ({ onNavigate, onLogin }) => {
       setError('Terjadi kesalahan jaringan.');
     } finally {
       setIsLoading(false);
+=======
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+
+const Login: React.FC = () => {
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const email = `${phone}@user.satmoko.ai`;
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (loginError) throw loginError;
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Login gagal. Periksa nomor HP dan password.');
+    } finally {
+      setLoading(false);
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
     }
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950 relative overflow-hidden">
       <div className="w-full max-w-md space-y-10 bg-slate-900/80 p-10 rounded-[3.5rem] border border-slate-800 shadow-2xl relative backdrop-blur-xl">
         <div className="text-center">
@@ -71,6 +104,63 @@ const Login: React.FC<LoginProps> = ({ onNavigate, onLogin }) => {
             <button onClick={() => onNavigate(AppRoute.REGISTER)} className="font-black text-amber-500 uppercase tracking-widest">Daftar</button>
           </p>
         </div>
+=======
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            SATMOKO AI
+          </h1>
+          <p className="text-gray-500 mt-2">Masuk ke Studio Kreatif Anda</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="glass-card p-8 rounded-3xl space-y-6">
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Nomor HP</label>
+            <input
+              type="text"
+              required
+              placeholder="Contoh: 08123456789"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Password</label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50"
+          >
+            {loading ? 'Memproses...' : 'Login'}
+          </button>
+        </form>
+
+        <p className="text-center text-gray-500 mt-8 text-sm">
+          Belum punya akun?{' '}
+          <Link to="/register" className="text-blue-400 hover:text-blue-300 font-medium">
+            Daftar Sekarang
+          </Link>
+        </p>
+>>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
       </div>
     </div>
   );
