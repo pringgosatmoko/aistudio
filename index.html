@@ -1,51 +1,95 @@
-
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SATMOKO Creative Studio AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-      // Global process shim for browser compatibility
-      window.process = window.process || { env: {} };
-    </script>
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #020617;
-        color: #f1f5f9;
-        margin: 0;
-      }
-      #root { min-height: 100vh; }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fadeIn { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    </style>
-    <script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom": "https://esm.sh/react-dom@^19.2.3",
-    "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SATMOKO Studio – AI Creative</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 🔑 ENV (WAJIB ADA) -->
+  <script>
+    window.__ENV__ = {
+      SUPABASE_URL: "https://etvkggtxtbwjwqflhpew.supabase.co",
+      SUPABASE_ANON_KEY: "sb_publishable_WPn7nCbxprDmA8ja1Bzbhw_1iCYqL_B"
+    }
+  </script>
+
+  <!-- Import Maps -->
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.3.1",
+      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+      "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+    }
   }
-}
-</script>
-  <link rel="stylesheet" href="/index.css">
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+    }
+  </style>
 </head>
-  <body>
-    <div id="root"></div>
-    <!-- CRITICAL FIX: Script module entry point -->
-    <script type="module" src="index.tsx"></script>
-  <script type="module" src="/index.tsx"></script>
+
+<body>
+  <div id="root"></div>
+
+  <!-- APP -->
+  <script type="module">
+    import React from "react"
+    import { createRoot } from "react-dom/client"
+    import { createClient } from "@supabase/supabase-js"
+
+    const supabase = createClient(
+      window.__ENV__.SUPABASE_URL,
+      window.__ENV__.SUPABASE_ANON_KEY
+    )
+
+    function App() {
+      const [status, setStatus] = React.useState("checking")
+
+      React.useEffect(() => {
+        supabase.auth.getSession().then(() => {
+          setStatus("connected")
+        }).catch(() => {
+          setStatus("error")
+        })
+      }, [])
+
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="bg-slate-900 p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+            <h1 className="text-2xl font-bold mb-2">SATMOKO STUDIO</h1>
+            <p className="text-sm text-slate-400 mb-6">AI Creative Studio</p>
+
+            {status === "checking" && (
+              <p className="text-yellow-400">🔄 Mengecek Supabase...</p>
+            )}
+
+            {status === "connected" && (
+              <p className="text-green-400">✅ Supabase TERHUBUNG</p>
+            )}
+
+            {status === "error" && (
+              <p className="text-red-400">❌ Gagal koneksi Supabase</p>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    createRoot(document.getElementById("root")).render(<App />)
+  </script>
 </body>
 </html>
