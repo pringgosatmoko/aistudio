@@ -3,16 +3,12 @@
 
 cd /sdcard/cadangan || { echo "Folder project tidak ditemukan!"; exit 1; }
 
-# Set safe directory
 git config --global --add safe.directory /storage/emulated/0/cadangan
 
-# Tambahkan semua perubahan
 git add .
 
-# Commit perubahan (skip jika tidak ada)
 git commit -m "Update SATMOKO Creative Studio AI" 2>/dev/null || echo "Tidak ada perubahan baru"
 
-# Push ke repo
 git push origin main
 
 echo "✅ Update selesai!"
