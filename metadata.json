@@ -1,0 +1,8 @@
+{
+  "name": "SATMOKO Creative Studio AI",
+  "description": "Premium Image-to-Video and Text-to-Image generation studio powered by Gemini and VEO engine.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
