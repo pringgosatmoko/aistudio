@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SATMOKO Studio – AI Creative</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SATMOKO Creative Studio AI</title>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,83 +13,71 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- 🔑 ENV (WAJIB ADA) -->
-  <script>
-    window.__ENV__ = {
-      SUPABASE_URL: "https://etvkggtxtbwjwqflhpew.supabase.co",
-      SUPABASE_ANON_KEY: "sb_publishable_WPn7nCbxprDmA8ja1Bzbhw_1iCYqL_B"
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #020617;
+      color: #f1f5f9;
+      margin: 0;
     }
-  </script>
+  </style>
 
-  <!-- Import Maps -->
+  <!-- Import Map -->
   <script type="importmap">
   {
     "imports": {
-      "react": "https://esm.sh/react@18.3.1",
-      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-      "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+      "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7"
     }
   }
   </script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-    }
-  </style>
 </head>
 
 <body>
-  <div id="root"></div>
+  <div class="min-h-screen flex items-center justify-center">
+    <div class="text-center space-y-4">
+      <h1 class="text-3xl font-bold text-white">
+        SATMOKO Creative Studio AI
+      </h1>
+      <p id="status" class="text-slate-400">
+        Menghubungkan ke Supabase...
+      </p>
+    </div>
+  </div>
 
-  <!-- APP -->
+  <!-- MAIN SCRIPT -->
   <script type="module">
-    import React from "react"
-    import { createRoot } from "react-dom/client"
-    import { createClient } from "@supabase/supabase-js"
+    import { createClient } from "@supabase/supabase-js";
+
+    // 🔐 SUPABASE CONFIG (AMAN DI CLIENT)
+    const SUPABASE_URL = "https://etvkggtxtbwjwqflhpew.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WPn7nCbxprDmA8ja1Bzbhw_1iCYqL_B";
 
     const supabase = createClient(
-      window.__ENV__.SUPABASE_URL,
-      window.__ENV__.SUPABASE_ANON_KEY
-    )
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-    function App() {
-      const [status, setStatus] = React.useState("checking")
+    const statusEl = document.getElementById("status");
 
-      React.useEffect(() => {
-        supabase.auth.getSession().then(() => {
-          setStatus("connected")
-        }).catch(() => {
-          setStatus("error")
-        })
-      }, [])
+    async function testConnection() {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .limit(1);
 
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="bg-slate-900 p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
-            <h1 className="text-2xl font-bold mb-2">SATMOKO STUDIO</h1>
-            <p className="text-sm text-slate-400 mb-6">AI Creative Studio</p>
+        if (error) throw error;
 
-            {status === "checking" && (
-              <p className="text-yellow-400">🔄 Mengecek Supabase...</p>
-            )}
-
-            {status === "connected" && (
-              <p className="text-green-400">✅ Supabase TERHUBUNG</p>
-            )}
-
-            {status === "error" && (
-              <p className="text-red-400">❌ Gagal koneksi Supabase</p>
-            )}
-          </div>
-        </div>
-      )
+        statusEl.textContent = "✅ Supabase terhubung dengan aman";
+        statusEl.className = "text-green-400";
+      } catch (err) {
+        statusEl.textContent = "❌ Gagal konek Supabase (cek RLS / table)";
+        statusEl.className = "text-red-400";
+        console.error(err);
+      }
     }
 
-    createRoot(document.getElementById("root")).render(<App />)
+    testConnection();
   </script>
 </body>
 </html>
