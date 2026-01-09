@@ -1,144 +1,14 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>SATMOKO Creative Studio AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@19",
-      "react-dom/client": "https://esm.sh/react-dom@19/client",
-      "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
-    }
-  }
-  </script>
-</head>
-
-<body class="bg-slate-950 text-slate-100">
-  <div id="root"></div>
-
-  <script type="module">
-    import React, { useState, useEffect } from "react";
-    import { createRoot } from "react-dom/client";
-    import { createClient } from "@supabase/supabase-js";
-
-    const supabase = createClient(
-      "https://etvkggtxtbwjwqflhpew.supabase.co",
-      "sb_publishable_WPn7nCbxprDmA8ja1Bzbhw_1iCYqL_B"
-    );
-
-    function Login({ onAuth }) {
-      const [email, setEmail] = useState("");
-      const [password, setPassword] = useState("");
-      const [mode, setMode] = useState("login");
-      const [msg, setMsg] = useState("");
-
-      const submit = async () => {
-        setMsg("Loading...");
-        const res =
-          mode === "login"
-            ? await supabase.auth.signInWithPassword({ email, password })
-            : await supabase.auth.signUp({ email, password });
-
-        if (res.error) setMsg(res.error.message);
-        else onAuth(res.data.user);
-      };
-
-      return (
-        <div className="max-w-sm mx-auto mt-24 space-y-3">
-          <h2 className="text-xl font-bold">
-            {mode === "login" ? "Login" : "Register"}
-          </h2>
-
-          <input className="w-full p-2 text-black" placeholder="Email"
-            onChange={e => setEmail(e.target.value)} />
-
-          <input type="password" className="w-full p-2 text-black" placeholder="Password"
-            onChange={e => setPassword(e.target.value)} />
-
-          <button onClick={submit} className="w-full bg-blue-600 p-2">
-            {mode === "login" ? "Login" : "Register"}
-          </button>
-
-          <p>{msg}</p>
-
-          <small className="cursor-pointer" onClick={() =>
-            setMode(mode === "login" ? "register" : "login")
-          }>
-            {mode === "login" ? "Buat akun" : "Sudah punya akun"}
-          </small>
-        </div>
-      );
-    }
-
-    function App() {
-      const [user, setUser] = useState(null);
-
-      useEffect(() => {
-        supabase.auth.getUser().then(r => setUser(r.data.user));
-        supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
-      }, []);
-
-      if (!user) return <Login onAuth={setUser} />;
-
-      return (
-        <div className="p-8">
-          <h1 className="text-2xl font-bold">
-            Welcome {user.email}
-          </h1>
-          <p>Login berhasil 🎉</p>
-        </div>
-      );
-    }
-
-    createRoot(document.getElementById("root")).render(<App />);
-  </script>
-=======
-
-<!DOCTYPE html>
-<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SATMOKO Creative Studio AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #0a0a0a;
-        color: #ededed;
-      }
-      .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.90.1",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+    <link rel="stylesheet" href="/index.css">
+  </head>
   <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
->>>>>>> b52a159 (Initial commit SATMOKO Creative Studio AI)
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>
